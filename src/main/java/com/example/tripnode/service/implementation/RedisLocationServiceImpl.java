@@ -1,6 +1,6 @@
 package com.example.tripnode.service.implementation;
 
-import com.example.tripnode.dto.DriverLocation;
+import com.example.tripnode.dto.DriverLocationDto;
 import com.example.tripnode.service.location.LocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.geo.*;
@@ -32,25 +32,25 @@ public class RedisLocationServiceImpl implements LocationService {
     }
 
     @Override
-    public List<DriverLocation> getNearbyDrivers(Double latitude, Double longitude, Double radius) {
+    public List<DriverLocationDto> getNearbyDrivers(Double latitude, Double longitude, Double radius) {
         GeoOperations<String, String> geoOperations = stringRedisTemplate.opsForGeo();
         Distance circleRadius = new Distance(radius, Metrics.KILOMETERS);
 
-        Circle circle = new Circle(new Point(latitude, longitude), radius);
+        Circle circle = new Circle(new Point(latitude, longitude), circleRadius);
         GeoResults<RedisGeoCommands.GeoLocation<String>> results = geoOperations.radius(DRIVER_GEO_OPS_KEY, circle);
 
-        List<DriverLocation> driverLocations = new ArrayList<>();
+        List<DriverLocationDto> driverLocationDtos = new ArrayList<>();
         for(GeoResult<RedisGeoCommands.GeoLocation<String>> result: results.getContent()){
             Point point = geoOperations.position(DRIVER_GEO_OPS_KEY, result.getContent().getName()).get(0);
-            DriverLocation driverLocation = DriverLocation.builder()
+            DriverLocationDto driverLocationDto = DriverLocationDto.builder()
                     .driverId(result.getContent().getName())
                     .latitude(point.getY())
                     .longitude(point.getX())
                     .build();
 
-            driverLocations.add(driverLocation);
+            driverLocationDtos.add(driverLocationDto);
         }
 
-        return driverLocations;
+        return driverLocationDtos;
     }
 }

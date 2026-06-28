@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DriverLocation {
-    private String driverId;
+public class NearbyDriversRequestDto {
     private Double latitude;
     private Double longitude;
+    private Double radius;
 }
