@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: tripnode
+  datasource:
+    url: jdbc:mysql://localhost:3306/tripnode
+    username: root
+    password: Aman123@
+    driverClassName: com.mysql.cj.jdbc.Driver

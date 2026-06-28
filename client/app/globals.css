@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-background text-on-surface;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+@layer components {
+  /* Frosted glass surface used by both panels. */
+  .glass-panel {
+    background: rgba(31, 31, 31, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* Driver: animated radial backdrop. */
+  .abstract-bg {
+    background: radial-gradient(circle at 20% 30%, #1a1a1a 0%, #131313 100%);
+  }
+  .abstract-bg::before {
+    content: "";
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+      from 180deg at 50% 50%,
+      transparent 0deg,
+      rgba(198, 198, 198, 0.03) 90deg,
+      transparent 180deg
+    );
+    animation: rotate 20s linear infinite;
+    pointer-events: none;
+  }
+  .motion-line {
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(90deg, transparent, rgba(198, 198, 198, 0.2), transparent);
+    animation: move-line 8s linear infinite;
+  }
+
+  /* Rider: velocity mesh backdrop. */
+  .velocity-mesh {
+    background-color: #131313;
+    background-image:
+      radial-gradient(at 0% 0%, rgba(198, 198, 198, 0.15) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(71, 71, 71, 0.2) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(198, 198, 198, 0.1) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(31, 31, 31, 0.3) 0px, transparent 50%);
+  }
+  .velocity-lines {
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 100px,
+      rgba(198, 198, 198, 0.03) 100px,
+      rgba(198, 198, 198, 0.03) 101px
+    );
+    animation: slide 60s linear infinite;
+  }
+  .glow-orb {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(198, 198, 198, 0.08) 0%, transparent 70%);
+    filter: blur(60px);
+    border-radius: 50%;
+  }
+
+  .input-focus-ring:focus-within {
+    box-shadow: 0 0 0 2px #c6c6c6;
+  }
+
+  .sidebar-scroll::-webkit-scrollbar {
+    width: 4px;
+  }
+  .sidebar-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .sidebar-scroll::-webkit-scrollbar-thumb {
+    background: #353535;
+    border-radius: 10px;
+  }
+}
+
+/* Honor users who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
