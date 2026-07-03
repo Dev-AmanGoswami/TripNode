@@ -51,7 +51,8 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<BookingResponse> createBooking(@RequestBody BookingRequest request){
-        return ResponseEntity.status(HttpStatus.CREATED).body(null);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(bookingService.create(request));
     }
 
     @PutMapping("/{id}")

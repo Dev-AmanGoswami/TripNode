@@ -25,7 +25,7 @@ public class RedisLocationServiceImpl implements LocationService {
         GeoOperations<String, String> geoOperations = stringRedisTemplate.opsForGeo();
         geoOperations.add(
                 DRIVER_GEO_OPS_KEY,
-                new RedisGeoCommands.GeoLocation<>(driverId, new Point(latitude, longitude))
+                new RedisGeoCommands.GeoLocation<>(driverId, new Point(longitude, latitude))
         );
 
         return true;
@@ -36,7 +36,7 @@ public class RedisLocationServiceImpl implements LocationService {
         GeoOperations<String, String> geoOperations = stringRedisTemplate.opsForGeo();
         Distance circleRadius = new Distance(radius, Metrics.KILOMETERS);
 
-        Circle circle = new Circle(new Point(latitude, longitude), circleRadius);
+        Circle circle = new Circle(new Point(longitude, latitude), circleRadius);
         GeoResults<RedisGeoCommands.GeoLocation<String>> results = geoOperations.radius(DRIVER_GEO_OPS_KEY, circle);
 
         List<DriverLocationDto> driverLocationDtos = new ArrayList<>();
