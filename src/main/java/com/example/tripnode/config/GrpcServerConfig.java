@@ -1,0 +1,50 @@
+package com.example.tripnode.config;
+
+import com.example.tripnode.service.implementation.RideServiceImpl;
+import io.grpc.Server;
+import io.grpc.ServerBuilder;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+
+import java.io.IOException;
+
+@Configuration
+@RequiredArgsConstructor
+public class GrpcServerConfig {
+    @Value("${grpc.server.port:9090}")
+    private int grpcServerPort;
+    private final RideServiceImpl rideServiceImpl;
+
+    private Server server;
+
+    @PostConstruct
+    public void startGrpcServer() throws IOException {
+        server = ServerBuilder
+                .forPort(grpcServerPort)
+                .addService(rideServiceImpl)
+                .build()
+                .start();
+
+        System.out.println("gRPC server started on port: " + grpcServerPort);
+
+        new Thread(() -> {
+            try{
+                if(server != null){
+                    server.awaitTermination();
+                }
+            }catch(InterruptedException e){
+                Thread.currentThread().interrupt();
+                System.err.println("gRPC server interrupted");
+            }
+        }).start();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("Shutting down gRPC server");
+            if(server != null){
+                server.shutdown();
+            }
+        }));
+    }
+}
