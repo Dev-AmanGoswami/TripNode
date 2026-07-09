@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DriverLocationDto {
-    private String driverId;
+    private Long driverId;
     private Double latitude;
     private Double longitude;
 }

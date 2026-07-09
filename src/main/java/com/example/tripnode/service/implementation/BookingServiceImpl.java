@@ -1,5 +1,6 @@
 package com.example.tripnode.service.implementation;
 
+import com.example.tripnode.client.GrpcClient;
 import com.example.tripnode.dto.BookingRequest;
 import com.example.tripnode.dto.BookingResponse;
 import com.example.tripnode.dto.DriverLocationDto;
@@ -26,6 +27,7 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final LocationService locationService;
     private final DriverRepository driverRepository;
+    private final GrpcClient grpcClient;
 
     @Override
     public List<BookingResponse> findAll() {
@@ -93,6 +95,14 @@ public class BookingServiceImpl implements BookingService {
             10.0
         );
 
+        List<Long> driverIds = nearbyDrivers.stream().map(DriverLocationDto::getDriverId).toList();
+
+        grpcClient.notifyDriversForNewRide(
+            request.getPickUpLocationLatitude(),
+            request.getPickUpLocationLongitude(),
+            newBooking.getId(),
+            driverIds
+        );
 
         return bookingMapper.toResponse(newBooking);
     }
@@ -110,5 +120,21 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public void deleteById(Long id) {
 
+    }
+
+    @Override
+    public Boolean acceptRide(Long id, Long driverId){
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Booking not found with id: " + id));
+
+        Driver driver = driverRepository.findById(driverId)
+                .orElseThrow(() -> new IllegalArgumentException("Driver not found with id: " + id));
+        driver.setIsAvailable(false);
+        driverRepository.save(driver);
+
+        booking.setDriver(driver);
+        booking.setStatus(Booking.BookingStatus.CONFIRMED);
+        bookingRepository.save(booking);
+        return true;
     }
 }

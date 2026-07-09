@@ -30,5 +30,5 @@ message RideNotificationResponse {
 }
 
 service RideNotificationService{
-  rpc notifyDriversForNewRide(RideNotificationRequest) returns (RideAcceptanceResponse);
+  rpc notifyDriversForNewRide(RideNotificationRequest) returns (RideNotificationResponse);
 }

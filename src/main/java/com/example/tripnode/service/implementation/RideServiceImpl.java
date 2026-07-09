@@ -14,7 +14,13 @@ public class RideServiceImpl extends RideServiceGrpc.RideServiceImplBase {
     private final BookingService bookingService;
 
     @Override
-    public void acceptRide(RideAcceptanceRequest request, StreamObserver<RideAcceptanceResponse> responseStreamObserver){
-        //Call the booking service to update the ride with new driverId
+    public void acceptRide(RideAcceptanceRequest request, StreamObserver<RideAcceptanceResponse> responseObserver){
+        bookingService.acceptRide(request.getBookingId(), request.getDriverId());
+        RideAcceptanceResponse response = RideAcceptanceResponse.newBuilder()
+                .setSuccess(true)
+                .build();
+
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
     }
 }
