@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -33,6 +36,10 @@ public class Booking {
 
     private String dropOffLocation;
 
+    private BigDecimal fare;
+
+    private LocalDateTime scheduledPickupTime;
+
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
@@ -41,6 +48,7 @@ public class Booking {
     public enum BookingStatus{
         PENDING,
         CANCELLED,
+        CONFIRMED,
         COMPLETED
     }
 }
